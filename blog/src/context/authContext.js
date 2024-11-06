@@ -1,6 +1,7 @@
 import axios from "axios";
 import { createContext, useEffect, useState } from "react";
 
+// Create the AuthContext
 export const AuthContext = createContext();
 
 export const AuthContextProvider = ({ children }) => {
@@ -8,26 +9,29 @@ export const AuthContextProvider = ({ children }) => {
     JSON.parse(localStorage.getItem("user")) || null
   );
 
+  // Login function with error handling
   const login = async (inputs) => {
     try {
       const res = await axios.post("/auth/login", inputs);
       setCurrentUser(res.data);
     } catch (error) {
       console.error("Login failed:", error);
-      // Optionally: Set up state to display an error message to the user
+      // Optionally, add a way to show the error message to the user
     }
   };
 
+  // Logout function with error handling
   const logout = async () => {
     try {
       await axios.post("/auth/logout");
       setCurrentUser(null);
     } catch (error) {
       console.error("Logout failed:", error);
-      // Optionally: Display an error message to the user if needed
+      // Optionally, add a way to show the error message to the user
     }
   };
 
+  // Store the user in local storage whenever currentUser changes
   useEffect(() => {
     localStorage.setItem("user", JSON.stringify(currentUser));
   }, [currentUser]);
